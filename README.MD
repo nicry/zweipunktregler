@@ -78,10 +78,10 @@ try:
         log_temp(temp)
         if temp > temp_threshold:
             GPIO.output(LED_PIN, GPIO.HIGH)
-            print("Turn on cooling")
+            print("Cooling on")
         else:
             GPIO.output(LED_PIN, GPIO.LOW)
-            print("Turned off cooling")
+            print("Cooling off")
         sleep(1)
 
 except KeyboardInterrupt:
