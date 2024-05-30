@@ -1,27 +1,32 @@
 import RPi.GPIO as GPIO
 from w1thermsensor import W1ThermSensor
 from time import sleep
+import datetime
 
 LED_PIN = 5
-TEMP_Threshold = 27.0
+temp_threshold = 25.0
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(LED_PIN, GPIO.OUT)
 
 sensor = W1ThermSensor()
 
+def log_temp(temp):
+    with open("temp_log.txt", "a") as log_file:
+        log_file.write(str(datetime.datetime.now()) + " " + str(temp) + "\n")
+
 try:
-        while True:
-                temp = sensor.get_temperature()
-                print("Current temp is: " + str(temp))
-
-                if temp > TEMP_Threshold:
-                        GPIO.output(LED_PIN, GPIO.HIGH)
-                        print("LED High")
-                else:
-                        GPIO.output(LED_PIN, GPIO.LOW)
-
-                sleep(1)
+    while True:
+        temp = sensor.get_temperature()
+        print("Current temp is: " + str(temp))
+        log_temp(temp)
+        if temp > temp_threshold:
+            GPIO.output(LED_PIN, GPIO.HIGH)
+            print("Turn on cooling")
+        else:
+            GPIO.output(LED_PIN, GPIO.LOW)
+            print("Turned off cooling")
+        sleep(1)
 
 except KeyboardInterrupt:
         print("Program terminated")
